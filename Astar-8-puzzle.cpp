@@ -19,6 +19,7 @@
 #include <queue>
 #include <set>
 #include <string>
+#include <map>
 
 using namespace std;
 #define N 3
@@ -26,6 +27,9 @@ using namespace std;
 // botton, left, top, right
 int row[] = { 1, 0, -1, 0 };
 int col[] = { 0, -1, 0, 1 };
+
+vector<vector<int>> goal = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}}; // 3x3
+map<int, vector<int>> ind;
 
 struct Node {
     Node* parent = NULL;
@@ -79,8 +83,7 @@ void print_path(Node* node)
 }
 
 int heuristic(vector<vector<int>>& mat)
-{
-    vector<vector<int>> goal = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}}; // 3x3
+{   
     int cnt = 0;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -90,6 +93,29 @@ int heuristic(vector<vector<int>>& mat)
         }
     }
     return cnt;
+}
+
+void init_index()
+{
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            vector<int> tmp = {i, j};
+            ind[goal[i][j]] = tmp;
+        }
+    }
+}
+
+int heuristic2(vector<vector<int>>& mat)
+{
+    int cost = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (mat[i][j] != goal[i][j] && mat[i][j] != 0) {
+                cost += abs(i - ind[mat[i][j]][0]) + abs(j - ind[mat[i][j]][1]);
+            }
+        }
+    }
+    return cost;
 }
 
 string serialize(vector<vector<int>>& mat)
@@ -124,10 +150,11 @@ void A_star_search(vector<vector<int>>& initial)
 {
     priority_queue<Node*, vector<Node*>, comp> open;
     set<string> ancestors;
+    init_index();
 
     bool success = false;
 
-    Node* T = new Node(NULL, initial, 0, heuristic(initial));
+    Node* T = new Node(NULL, initial, 0, heuristic2(initial));
     open.push(T);
     ancestors.insert(serialize(T->value));
 
@@ -149,7 +176,7 @@ void A_star_search(vector<vector<int>>& initial)
                 string s = serialize(v);
                 if (ancestors.find(s) == ancestors.end()) {
                     ancestors.insert(s);
-                    Node* child = new Node(node, v, node->g + 1, heuristic(v));
+                    Node* child = new Node(node, v, node->g + 1, heuristic2(v));
                     open.push(child);
                 }
             }
