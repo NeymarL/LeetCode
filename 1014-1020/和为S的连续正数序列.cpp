@@ -25,6 +25,7 @@ public:
         }
         while (i > 1) {
             if (i % 2 == 0) {
+                // divide even number = *.5
                 double tmp = sum / (i * 1.0);
                 if (tmp - (int)tmp == 0.5) {
                     vector<int> ans;
@@ -37,6 +38,7 @@ public:
                     res.push_back(ans);
                 }
             } else {
+                // divide odd number with no remainder
                 if (sum % i == 0) {
                     int tmp = sum / i;
                     vector<int> ans;
