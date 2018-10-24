@@ -16,9 +16,7 @@ public:
         int carry = 0;
         int i = 0;
         while ((num1 || num2 || carry) && i < 32) {
-            // cout << num1 << " " << num2 << " " << carry << " ";
             res |= ((((num1 ^ num2) ^ carry)) & 1) << i;
-            // cout << res << endl;
             if (((num1 & 1) && (num2 & 1)) ||
                 ((num1 & 1) && (carry & 1)) ||
                 ((num2 & 1) && (carry & 1))) {
