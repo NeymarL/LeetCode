@@ -23,12 +23,26 @@ public:
             nn = -nn;
         }
         while (nn != 0) {
-            if (nn & 1 == 1) {
-                res *= x;
+            if (nn & 1) {
+                res *= x;   // odd
             }
-            x *= x;
-            nn = nn >> 1;
+            x *= x;         // even
+            nn >>= 1;
         }
         return res;
+    }
+
+    double myPow2(double x, int n)
+    {
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            return 1 / myPow2(x, -n);
+        }
+        if (n % 2) {
+            return x * myPow2(x, n - 1);
+        }
+        return myPow2(x * x, n / 2);
     }
 };
